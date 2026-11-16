@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar produtos | Confiro Já</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+        }
+
+        .cabecalho {
+            background: #17365d;
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .painel {
+            background: white;
+            padding: 25px;
+            margin-top: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        .botao {
+            display: inline-block;
+            padding: 12px 18px;
+            margin: 8px 5px 8px 0;
+            background: #17365d;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 7px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .voltar {
+            background: #64748b;
+        }
+
+        .editar {
+            background: #edf2f8;
+            color: #17365d;
+        }
+
+        .desativar {
+            background: #a52a2a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #edf2f8;
+            color: #17365d;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .mensagem {
+            background: #e5f5e9;
+            color: #246b36;
+            padding: 12px;
+            border-radius: 7px;
+            margin-top: 12px;
+        }
+
+        .vazio {
+            color: #777;
+            margin-top: 20px;
+        }
+
+        form {
+            display: inline;
+        }
+
+        .rodape {
+            text-align: center;
+            color: #777;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 650px) {
+            .tabela {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 650px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="cabecalho">
+        <h1>Confiro Já</h1>
+        <p>Gerenciamento de produtos</p>
+        <p>Controle de estoque escolar</p>
+    </div>
+
+    <div class="painel">
+
+        <h2>Produtos cadastrados</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mensagem">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <a class="botao" href="{% url 'estoque:novo_produto' %}">
+            + Cadastrar produto
+        </a>
+
+        <a class="botao voltar" href="{% url 'usuarios:inicio' %}">
+            Voltar ao painel
+        </a>
+
+        {% if produtos %}
+            <div class="tabela">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Categoria</th>
+                            <th>Unidade</th>
+                            <th>Saldo atual</th>
+                            <th>Estoque mínimo</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for produto in produtos %}
+                            <tr>
+                                <td>{{ produto.nome }}</td>
+                                <td>{{ produto.categoria.nome }}</td>
+                                <td>{{ produto.get_unidade_display }}</td>
+                                <td>{{ produto.saldo_atual }}</td>
+                                <td>{{ produto.estoque_minimo }}</td>
+                                <td class="status">
+                                    {% if produto.ativo %}
+                                        Ativo
+                                    {% else %}
+                                        Inativo
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a class="botao editar"
+                                       href="{% url 'estoque:editar_produto' produto.id %}">
+                                        Editar
+                                    </a>
+
+                                    <form method="POST"
+                                          action="{% url 'estoque:alterar_status_produto' produto.id %}">
+                                        {% csrf_token %}
+
+                                        <button class="botao desativar" type="submit">
+                                            {% if produto.ativo %}
+                                                Desativar
+                                            {% else %}
+                                                Reativar
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="vazio">Nenhum produto cadastrado.</p>
+        {% endif %}
+
+    </div>
+
+    <div class="rodape">
+        Confiro Já — Controle inteligente de estoque escolar
+    </div>
+
+</div>
+</body>
+</html>

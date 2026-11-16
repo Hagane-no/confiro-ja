@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Confiro Já</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f4f8;
+            margin: 0;
+            padding: 30px 15px;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            text-align: center;
+            color: #17365d;
+        }
+
+        p {
+            color: #555;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 6px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 13px;
+            background: #17365d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #24558b;
+        }
+
+        .erro {
+            color: #b00020;
+            margin-top: 12px;
+        }
+
+        .cadastro {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        a {
+            color: #17365d;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Confiro Já</h1>
+
+    <p>Acesse o sistema de controle de estoque</p>
+
+    {% if messages %}
+        {% for mensagem in messages %}
+            <div class="erro">{{ mensagem }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% if form.errors %}
+        <div class="erro">
+            Usuário ou senha incorretos, ou acesso não autorizado.
+        </div>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label for="id_username">Usuário</label>
+        <input
+            type="text"
+            name="username"
+            id="id_username"
+            autocomplete="username"
+            required
+        >
+
+        <label for="id_password">Senha</label>
+        <input
+            type="password"
+            name="password"
+            id="id_password"
+            autocomplete="current-password"
+            required
+        >
+
+        <button type="submit">Entrar</button>
+    </form>
+
+    <div class="cadastro">
+        Ainda não possui acesso?
+        <br>
+        <a href="{% url 'usuarios:cadastro' %}">
+            Cadastrar-se
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

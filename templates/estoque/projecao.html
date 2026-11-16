@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeção de Estoque | Confiro Já</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f4f8;
+            margin: 0;
+            padding: 20px;
+            color: #263445;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 25px auto;
+        }
+
+        .cabecalho {
+            background: #17365d;
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .painel {
+            background: white;
+            padding: 22px;
+            margin-top: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.07);
+        }
+
+        .tabela-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        th, td {
+            padding: 13px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #edf2f8;
+            color: #17365d;
+        }
+
+        .situacao {
+            font-weight: bold;
+        }
+
+        .esgotado {
+            color: #b42318;
+        }
+
+        .baixo {
+            color: #b26a00;
+        }
+
+        .adequado {
+            color: #18794e;
+        }
+
+        .sem-consumo {
+            color: #626b78;
+        }
+
+        .botao {
+            display: inline-block;
+            padding: 12px 18px;
+            margin-top: 15px;
+            background: #17365d;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+        }
+
+        .observacao {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .painel {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="cabecalho">
+        <h1>Projeção de Estoque</h1>
+        <p>Controle inteligente de consumo e reposição</p>
+        <p>Data de referência: {{ data_referencia|date:"d/m/Y" }}</p>
+    </div>
+
+    <div class="painel">
+        <h2>Análise dos produtos</h2>
+
+        <p class="observacao">
+            A projeção considera as saídas registradas nos últimos
+            30 dias para calcular o consumo médio diário e estimar
+            o tempo restante de estoque.
+        </p>
+
+        <div class="tabela-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Categoria</th>
+                        <th>Saldo atual</th>
+                        <th>Consumo em 30 dias</th>
+                        <th>Média diária</th>
+                        <th>Dias restantes</th>
+                        <th>Previsão de esgotamento</th>
+                        <th>Situação</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in resultados %}
+                    <tr>
+                        <td>{{ item.produto.nome }}</td>
+
+                        <td>{{ item.produto.categoria.nome }}</td>
+
+                        <td>
+                            {{ item.saldo|floatformat:2 }}
+                            {{ item.produto.get_unidade_display }}
+                        </td>
+
+                        <td>{{ item.consumo|floatformat:2 }}</td>
+
+                        <td>{{ item.media_diaria|floatformat:2 }}</td>
+
+                        <td>
+                            {% if item.dias_restantes != None %}
+                                {{ item.dias_restantes }} dias
+                            {% else %}
+                                Não disponível
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if item.data_esgotamento %}
+                                {{ item.data_esgotamento|date:"d/m/Y" }}
+                            {% else %}
+                                Sem previsão
+                            {% endif %}
+                        </td>
+
+                        <td class="situacao
+                            {% if item.situacao == 'Esgotado' %}
+                                esgotado
+                            {% elif item.situacao == 'Estoque baixo' %}
+                                baixo
+                            {% else %}
+                                adequado
+                            {% endif %}">
+
+                            {{ item.situacao }}
+
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="8">
+                            Nenhum produto ativo cadastrado.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <p class="observacao">
+            Atenção: a previsão é uma estimativa baseada no consumo
+            registrado. Produtos sem saídas nos últimos 30 dias não
+            possuem previsão de esgotamento calculada.
+        </p>
+
+        <a class="botao" href="{% url 'usuarios:inicio' %}">
+            Voltar ao painel inicial
+        </a>
+
+        <a class="botao" href="{% url 'estoque:nova_movimentacao' %}">
+            Registrar movimentação
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

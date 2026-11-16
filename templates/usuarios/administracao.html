@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Administração | Confiro Já</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f1f4f8;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+.container { max-width: 900px; margin: auto; }
+header {
+    background: #17365d;
+    color: white;
+    padding: 22px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+.painel {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.atalhos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+.atalho {
+    display: block;
+    padding: 20px;
+    background: #edf2f8;
+    color: #17365d;
+    text-decoration: none;
+    border-radius: 9px;
+    font-weight: bold;
+}
+.atalho:hover { background: #dce7f4; }
+.descricao {
+    font-size: 13px;
+    font-weight: normal;
+    margin-top: 8px;
+    color: #555;
+}
+.voltar {
+    display: inline-block;
+    margin-top: 22px;
+    padding: 11px 16px;
+    background: #17365d;
+    color: white;
+    text-decoration: none;
+    border-radius: 7px;
+}
+footer {
+    text-align: center;
+    color: #777;
+    padding: 15px;
+    font-size: 13px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+    <h1>Confiro Já</h1>
+    <p>Painel de administração</p>
+</header>
+
+<div class="painel">
+    <h2>Área do administrador</h2>
+    <p>Selecione uma das opções para gerenciar o sistema.</p>
+
+    <div class="atalhos">
+        <a href="{% url 'estoque:gerenciar_produtos' %}" class="atalho">
+            Gerenciar produtos
+            <div class="descricao">Cadastrar, editar e desativar produtos.</div>
+        </a>
+
+        <a href="{% url 'estoque:gerenciar_categorias' %}" class="atalho">
+            Gerenciar categorias
+            <div class="descricao">Cadastrar, editar e excluir categorias.</div>
+        </a>
+
+        <a href="{% url 'usuarios:aprovacoes' %}" class="atalho">
+            Aprovar funcionários
+            <div class="descricao">Autorizar ou rejeitar novos cadastros.</div>
+        </a>
+
+        <a href="{% url 'estoque:historico' %}" class="atalho">
+            Histórico de movimentações
+            <div class="descricao">Consultar entradas e saídas registradas.</div>
+        </a>
+
+        <a href="{% url 'estoque:projecao' %}" class="atalho">
+            Projeção de estoque
+            <div class="descricao">Consultar consumo e previsão de esgotamento.</div>
+        </a>
+    </div>
+
+    <a href="{% url 'usuarios:inicio' %}" class="voltar">Voltar ao início</a>
+</div>
+
+<footer>Confiro Já — Sistema de Controle de Estoque Escolar</footer>
+</div>
+</body>
+</html>

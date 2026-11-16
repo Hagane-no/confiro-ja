@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Início | Confiro Já</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+        }
+
+        .cabecalho {
+            background: #17365d;
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .painel {
+            background: white;
+            padding: 25px;
+            margin-top: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        .opcao {
+            display: block;
+            padding: 15px;
+            margin-top: 12px;
+            background: #edf2f8;
+            color: #17365d;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .opcao:hover {
+            background: #dce7f3;
+        }
+
+        .sair {
+            background: #a52a2a;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            margin-top: 20px;
+            border-radius: 6px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .rodape {
+            text-align: center;
+            color: #777;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="cabecalho">
+        <h1>Confiro Já</h1>
+        <p>Sistema de Controle de Estoque Escolar</p>
+        <p>Bem-vindo(a), {{ request.user.first_name|default:request.user.username }}!</p>
+    </div>
+
+    <div class="painel">
+        <h2>Painel inicial</h2>
+
+        <p><strong>Usuário:</strong> {{ request.user.username }}</p>
+        <p><strong>Perfil:</strong> {{ request.user.get_tipo_display }}</p>
+
+        <h3>Controle de estoque</h3>
+
+        <a class="opcao" href="{% url 'estoque:nova_movimentacao' %}">
+            Registrar entrada ou saída
+        </a>
+
+        <a class="opcao" href="{% url 'estoque:historico' %}">
+            Histórico de movimentações
+        </a>
+
+        <h3>Outras funcionalidades</h3>
+
+        <a class="opcao" href="{% url 'estoque:projecao' %}">
+            Projeção inteligente de estoque
+        </a>
+
+        {% if request.user.tipo == 'ADM' and request.user.is_staff %}
+            <h3>Administração</h3>
+
+            <a class="opcao" href="{% url 'usuarios:administracao' %}">
+                Painel de administração
+            </a>
+
+            <a class="opcao" href="{% url 'estoque:gerenciar_produtos' %}">
+                Gerenciar produtos
+            </a>
+
+            <a class="opcao" href="{% url 'estoque:gerenciar_categorias' %}">
+                Gerenciar categorias
+            </a>
+
+            <a class="opcao" href="{% url 'usuarios:aprovacoes' %}">
+                Gerenciar autorizações de funcionários
+            </a>
+        {% endif %}
+
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="sair" type="submit">Sair do sistema</button>
+        </form>
+    </div>
+
+    <div class="rodape">
+        Confiro Já — Controle inteligente de estoque escolar
+    </div>
+
+</div>
+</body>
+</html>

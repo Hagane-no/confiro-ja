@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nova movimentação - Confiro Já</title>
+    <style>
+        body { font-family: Arial; background: #f3f5f8; margin: 0; padding: 20px; }
+        main { max-width: 650px; margin: 30px auto; background: white; padding: 25px; border-radius: 12px; }
+        h1 { color: #234b70; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 6px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; }
+        button, a { display: inline-block; padding: 12px 18px; margin-top: 20px; border: 0; border-radius: 6px; background: #234b70; color: white; text-decoration: none; cursor: pointer; }
+        .mensagem { padding: 12px; background: #e1f5e7; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+<main>
+    <h1>Nova movimentação</h1>
+    <p>Registre uma entrada ou saída do estoque.</p>
+
+    {% for message in messages %}
+        <div class="mensagem">{{ message }}</div>
+    {% endfor %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Registrar movimentação</button>
+    </form>
+
+    <a href="{% url 'estoque:historico' %}">Consultar histórico</a>
+    <a href="/">Voltar ao início</a>
+</main>
+</body>
+</html>

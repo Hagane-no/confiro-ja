@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ titulo }} | Confiro Já</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 30px auto;
+        }
+
+        .cabecalho {
+            background: #17365d;
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .painel {
+            background: white;
+            padding: 25px;
+            margin-top: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #17365d;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+            font-family: Arial, sans-serif;
+        }
+
+        input[type="checkbox"] {
+            width: auto;
+        }
+
+        .campo-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .campo-checkbox label {
+            margin: 0;
+        }
+
+        .botao {
+            display: inline-block;
+            padding: 12px 20px;
+            margin-top: 22px;
+            background: #17365d;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 15px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .voltar {
+            background: #64748b;
+            margin-left: 8px;
+        }
+
+        .erro {
+            color: #a52a2a;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .ajuda {
+            color: #777;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .rodape {
+            text-align: center;
+            color: #777;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <div class="cabecalho">
+        <h1>Confiro Já</h1>
+        <p>Cadastro e edição de produtos</p>
+    </div>
+
+    <div class="painel">
+
+        <h2>{{ titulo }}</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            {% for field in form %}
+                {% if field.name != "ativo" %}
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    {% if field.help_text %}
+                        <div class="ajuda">{{ field.help_text }}</div>
+                    {% endif %}
+
+                    {% for error in field.errors %}
+                        <div class="erro">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+
+            {% if form.ativo %}
+                <div class="campo-checkbox">
+                    {{ form.ativo }}
+                    <label for="{{ form.ativo.id_for_label }}">
+                        Produto ativo
+                    </label>
+                </div>
+
+                {% for error in form.ativo.errors %}
+                    <div class="erro">{{ error }}</div>
+                {% endfor %}
+            {% endif %}
+
+            {% for error in form.non_field_errors %}
+                <div class="erro">{{ error }}</div>
+            {% endfor %}
+
+            <button class="botao" type="submit">
+                Salvar produto
+            </button>
+
+            <a class="botao voltar"
+               href="{% url 'estoque:gerenciar_produtos' %}">
+                Cancelar
+            </a>
+        </form>
+
+    </div>
+
+    <div class="rodape">
+        Confiro Já — Controle inteligente de estoque escolar
+    </div>
+
+</div>
+</body>
+</html>

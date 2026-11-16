@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprovações | Confiro Já</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f4f8;
+            margin: 0;
+            padding: 25px 15px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: #17365d;
+            text-align: center;
+        }
+
+        .mensagem {
+            padding: 12px;
+            background: #e8f5e9;
+            color: #256029;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .usuario {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .usuario p {
+            margin: 7px 0;
+        }
+
+        .acoes {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            border: none;
+            border-radius: 6px;
+            padding: 11px 15px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .aprovar {
+            background: #218838;
+        }
+
+        .rejeitar {
+            background: #b02a37;
+        }
+
+        .vazio {
+            text-align: center;
+            color: #666;
+            padding: 25px;
+        }
+
+        .voltar {
+            display: block;
+            text-align: center;
+            margin-top: 25px;
+            color: #17365d;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Confiro Já</h1>
+    <h2>Autorizações de funcionários</h2>
+
+    {% for mensagem in messages %}
+        <div class="mensagem">
+            {{ mensagem }}
+        </div>
+    {% endfor %}
+
+    {% for usuario in pendentes %}
+
+        <div class="usuario">
+
+            <p><strong>Usuário:</strong> {{ usuario.username }}</p>
+
+            <p><strong>Nome:</strong> {{ usuario.first_name }} {{ usuario.last_name }}</p>
+
+            <p><strong>E-mail:</strong> {{ usuario.email }}</p>
+
+            <p><strong>Telefone:</strong> {{ usuario.telefone|default:"Não informado" }}</p>
+
+            <p><strong>Escola:</strong> {{ usuario.escola }}</p>
+
+            <div class="acoes">
+
+                <form method="POST" action="{% url 'usuarios:aprovar_usuario' usuario.id %}">
+                    {% csrf_token %}
+                    <button class="aprovar" type="submit">
+                        Aprovar
+                    </button>
+                </form>
+
+                <form method="POST" action="{% url 'usuarios:rejeitar_usuario' usuario.id %}">
+                    {% csrf_token %}
+                    <button class="rejeitar" type="submit"
+                        onclick="return confirm('Deseja realmente rejeitar este cadastro?')">
+                        Rejeitar
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <div class="vazio">
+            Não existem funcionários aguardando autorização.
+        </div>
+
+    {% endfor %}
+
+    <a class="voltar" href="{% url 'usuarios:inicio' %}">
+        Voltar ao início
+    </a>
+
+</div>
+
+</body>
+</html>
